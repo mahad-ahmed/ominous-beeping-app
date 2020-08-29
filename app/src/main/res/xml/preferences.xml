@@ -1,0 +1,48 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory app:title="Preferences"
+        app:iconSpaceReserved="false">
+
+        <SeekBarPreference
+            android:key="shake_count"
+            app:title="Shake Count"
+            android:summary="How many shakes to trigger the beeping"
+            android:defaultValue="4"
+            app:min="1"
+            android:max="16"
+            app:updatesContinuously="false"
+            app:showSeekBarValue="true"
+            app:iconSpaceReserved="false" />
+
+        <SeekBarPreference
+            android:key="beep_duration"
+            app:title="Beeping Duration"
+            android:summary="How long the beeping lasts (Seconds)"
+            android:defaultValue="10"
+            app:min="1"
+            android:max="60"
+            app:updatesContinuously="false"
+            app:showSeekBarValue="true"
+            app:iconSpaceReserved="false" />
+
+        <SwitchPreference
+            android:key="bg_beeping"
+            app:title="Beep In Background"
+            android:summary="Beep when the app is not showing"
+            android:defaultValue="false"
+            app:iconSpaceReserved="false" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:iconSpaceReserved="false">
+
+        <Preference
+            android:key="rating"
+            app:title="Rating &amp; Feedback"
+            android:summary="Give your feedback on the Play Store"
+            app:iconSpaceReserved="false" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
