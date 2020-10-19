@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentActivity;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
@@ -71,8 +72,9 @@ public class SettingsActivity extends AppCompatActivity {
                     manager.requestReviewFlow().addOnCompleteListener(new OnCompleteListener<ReviewInfo>() {
                         @Override
                         public void onComplete(@NonNull Task<ReviewInfo> task) {
-                            if(task.isSuccessful()) {
-                                manager.launchReviewFlow(getActivity(), task.getResult());
+                            FragmentActivity activity = getActivity();
+                            if(activity != null && task.isSuccessful()) {
+                                manager.launchReviewFlow(activity, task.getResult());
                             }
                         }
                     });
