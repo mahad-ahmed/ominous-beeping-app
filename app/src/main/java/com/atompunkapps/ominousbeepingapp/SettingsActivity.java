@@ -34,7 +34,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     public static class SettingsFragment extends PreferenceFragmentCompat {
-        private Intent resultIntent = new Intent();
+        private final Intent resultIntent = new Intent();
 
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
