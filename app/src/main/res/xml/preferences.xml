@@ -33,6 +33,47 @@
             android:defaultValue="false"
             app:iconSpaceReserved="false" />
 
+        <PreferenceCategory
+            android:key="advanced"
+            app:title="Advanced"
+            app:initialExpandedChildrenCount="0"
+            app:iconSpaceReserved="false">
+
+            <SeekBarPreference
+                android:key="initial_delay"
+                app:title="Initial Gap"
+                android:summary="Gap between beeps at start (Milliseconds)"
+                android:defaultValue="1000"
+                app:min="500"
+                android:max="5000"
+                app:updatesContinuously="false"
+                app:showSeekBarValue="true"
+                app:iconSpaceReserved="false" />
+
+            <SeekBarPreference
+                android:key="initial_delta"
+                app:title="Initial Gap Delta"
+                android:summary="Initial gap delta OR beep acceleration (Milliseconds)"
+                android:defaultValue="150"
+                app:min="25"
+                android:max="250"
+                app:updatesContinuously="false"
+                app:showSeekBarValue="true"
+                app:iconSpaceReserved="false" />
+
+            <SeekBarPreference
+                android:key="min_delay"
+                app:title="Minimum Gap"
+                android:summary="Final beep gap (Milliseconds)"
+                android:defaultValue="25"
+                app:min="15"
+                android:max="350"
+                app:updatesContinuously="false"
+                app:showSeekBarValue="true"
+                app:iconSpaceReserved="false" />
+
+        </PreferenceCategory>
+
     </PreferenceCategory>
 
     <PreferenceCategory app:iconSpaceReserved="false">

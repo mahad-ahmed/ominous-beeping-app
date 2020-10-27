@@ -28,9 +28,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private static final int SHAKE_MIN_DELAY = 300;
     private static final int SHAKE_TIMEOUT = 2000;
 
-    private static final int BEEP_DELAY_MIN = 25;
-    private static final int BEEP_DELAY_START = 1000;
-    private static final float DELAY_DELTA_START = 150;
+    private static final int DEFAULT_START_DELAY = 1000;
+    private static final int DEFAULT_START_DELTA = 150;
+    private static final int DEFAULT_MIN_DELAY = 25;
 
     private Sensor sensor;
     private SensorManager sensorManager;
@@ -47,11 +47,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     };
     private int beepIndex = 0;
 
+    private long initialDelay;
+    private float initialDelayDelta;
+    private int minDelay;
+
     private long shakeTime;
     private int count;
     private int shakeCount;
     private int beepDuration;
-    private float delayDelta = DELAY_DELTA_START;
+    private long delay;
+    private float delayDelta;
     private boolean forceStop = false;
 
     private AdView adView;
@@ -93,16 +98,22 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         shakeCount = preferences.getInt("shake_count", 4);
         beepDuration = preferences.getInt("beep_duration", 10) * 1000;
 
+        initialDelay = preferences.getInt("initial_delay", DEFAULT_START_DELAY);
+        initialDelayDelta = preferences.getInt("initial_delta", DEFAULT_START_DELTA);
+        minDelay = preferences.getInt("min_delay", DEFAULT_MIN_DELAY);
+
+        delay = initialDelay;
+        delayDelta = initialDelayDelta;
+
         mp = MediaPlayer.create(this, R.raw.beep6);
         mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            long delay = BEEP_DELAY_START;
             @Override
             public void onCompletion(MediaPlayer mp) {
                 if(System.currentTimeMillis() > stopTime || forceStop) {
                     imageView.setVisibility(View.GONE);
 
-                    delay = BEEP_DELAY_START;
-                    delayDelta = DELAY_DELTA_START;
+                    delay = initialDelay;
+                    delayDelta = initialDelayDelta;
                     forceStop = false;
                     return;
                 }
@@ -110,8 +121,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     Thread.sleep(delay);
                     delayDelta = delayDelta * 0.91f;
                     delay -= Math.round(delayDelta);
-                    if(delay < BEEP_DELAY_MIN) {
-                        delay = BEEP_DELAY_MIN;
+                    if(delay < minDelay) {
+                        delay = minDelay;
                     }
 
                     beepIndex = (beepIndex + 1) % 4;
@@ -176,6 +187,17 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             }
             if(data.hasExtra("beep_duration_changed")) {
                 beepDuration = PreferenceManager.getDefaultSharedPreferences(this).getInt("beep_duration", 10) * 1000;
+            }
+            if(data.hasExtra("initial_delay_changed")) {
+                initialDelay = PreferenceManager.getDefaultSharedPreferences(this).getInt("initial_delay", DEFAULT_START_DELAY);
+                delay = initialDelay;
+            }
+            if(data.hasExtra("initial_delta_changed")) {
+                initialDelayDelta = PreferenceManager.getDefaultSharedPreferences(this).getInt("initial_delta", DEFAULT_START_DELTA);
+                delayDelta = initialDelayDelta;
+            }
+            if(data.hasExtra("min_delay_changed")) {
+                minDelay = PreferenceManager.getDefaultSharedPreferences(this).getInt("min_delay", DEFAULT_MIN_DELAY);
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
