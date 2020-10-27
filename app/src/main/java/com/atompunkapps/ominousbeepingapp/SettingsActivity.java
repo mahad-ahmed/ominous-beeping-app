@@ -49,6 +49,7 @@ public class SettingsActivity extends AppCompatActivity {
                     resultIntent
             );
 
+            //noinspection ConstantConditions
             findPreference("shake_count").setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -57,6 +58,7 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             });
 
+            //noinspection ConstantConditions
             findPreference("beep_duration").setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -65,6 +67,7 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             });
 
+            //noinspection ConstantConditions
             findPreference("rating").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
