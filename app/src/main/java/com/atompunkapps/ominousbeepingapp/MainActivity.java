@@ -39,7 +39,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private long stopTime;
 
     private ImageView imageView;
-    private int[] beeps = new int[] { R.drawable.circle_1, R.drawable.circle_2, R.drawable.circle_3, R.drawable.circle_4 };
+    private final int[] beeps = new int[] {
+            R.drawable.circle_1,
+            R.drawable.circle_2,
+            R.drawable.circle_3,
+            R.drawable.circle_4
+    };
     private int beepIndex = 0;
 
     private long shakeTime;
