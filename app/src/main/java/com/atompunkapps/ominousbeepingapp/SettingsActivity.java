@@ -11,16 +11,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentActivity;
-import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.SeekBarPreference;
 import androidx.preference.SwitchPreference;
 
-import com.google.android.play.core.review.ReviewInfo;
 import com.google.android.play.core.review.ReviewManager;
 import com.google.android.play.core.review.ReviewManagerFactory;
-import com.google.android.play.core.tasks.OnCompleteListener;
-import com.google.android.play.core.tasks.Task;
 
 public class SettingsActivity extends AppCompatActivity {
     @Override
@@ -55,66 +51,45 @@ public class SettingsActivity extends AppCompatActivity {
             );
 
             //noinspection ConstantConditions
-            findPreference("shake_count").setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                @Override
-                public boolean onPreferenceChange(Preference preference, Object newValue) {
-                    resultIntent.putExtra("shake_count_changed", true);
-                    return true;
-                }
+            findPreference("shake_count").setOnPreferenceChangeListener((preference, newValue) -> {
+                resultIntent.putExtra("shake_count_changed", true);
+                return true;
             });
 
             //noinspection ConstantConditions
-            findPreference("beep_duration").setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                @Override
-                public boolean onPreferenceChange(Preference preference, Object newValue) {
-                    resultIntent.putExtra("beep_duration_changed", true);
-                    return true;
-                }
+            findPreference("beep_duration").setOnPreferenceChangeListener((preference, newValue) -> {
+                resultIntent.putExtra("beep_duration_changed", true);
+                return true;
             });
 
             //noinspection ConstantConditions
-            findPreference("rating").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                @Override
-                public boolean onPreferenceClick(Preference preference) {
-                    final ReviewManager manager = ReviewManagerFactory.create(preference.getContext());
-                    manager.requestReviewFlow().addOnCompleteListener(new OnCompleteListener<ReviewInfo>() {
-                        @Override
-                        public void onComplete(@NonNull Task<ReviewInfo> task) {
-                            FragmentActivity activity = getActivity();
-                            if(activity != null && task.isSuccessful()) {
-                                manager.launchReviewFlow(activity, task.getResult());
-                            }
-                        }
-                    });
-                    return true;
-                }
+            findPreference("rating").setOnPreferenceClickListener(preference -> {
+                final ReviewManager manager = ReviewManagerFactory.create(preference.getContext());
+                manager.requestReviewFlow().addOnCompleteListener(task -> {
+                    FragmentActivity activity = getActivity();
+                    if(activity != null && task.isSuccessful()) {
+                        manager.launchReviewFlow(activity, task.getResult());
+                    }
+                });
+                return true;
             });
 
             //noinspection ConstantConditions
-            findPreference("initial_delay").setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                @Override
-                public boolean onPreferenceChange(Preference preference, Object newValue) {
-                    resultIntent.putExtra("initial_delay_changed", true);
-                    return true;
-                }
+            findPreference("initial_delay").setOnPreferenceChangeListener((preference, newValue) -> {
+                resultIntent.putExtra("initial_delay_changed", true);
+                return true;
             });
 
             //noinspection ConstantConditions
-            findPreference("initial_delta").setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                @Override
-                public boolean onPreferenceChange(Preference preference, Object newValue) {
-                    resultIntent.putExtra("initial_delta_changed", true);
-                    return true;
-                }
+            findPreference("initial_delta").setOnPreferenceChangeListener((preference, newValue) -> {
+                resultIntent.putExtra("initial_delta_changed", true);
+                return true;
             });
 
             //noinspection ConstantConditions
-            findPreference("min_delay").setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                @Override
-                public boolean onPreferenceChange(Preference preference, Object newValue) {
-                    resultIntent.putExtra("min_delay_changed", true);
-                    return true;
-                }
+            findPreference("min_delay").setOnPreferenceChangeListener((preference, newValue) -> {
+                resultIntent.putExtra("min_delay_changed", true);
+                return true;
             });
 
 //            findPreference("bg_beeping").setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
