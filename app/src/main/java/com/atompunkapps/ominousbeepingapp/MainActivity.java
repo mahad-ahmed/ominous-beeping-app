@@ -68,16 +68,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         imageView = findViewById(R.id.beep_image);
 
-        findViewById(R.id.options_image).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivityForResult(
-                        new Intent(MainActivity.this, SettingsActivity.class)
-                                .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP),
-                        REQUEST_CODE_SETTINGS
-                );
-            }
-        });
+        findViewById(R.id.options_image).setOnClickListener(v -> startActivityForResult(
+                new Intent(MainActivity.this, SettingsActivity.class)
+                        .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP),
+                REQUEST_CODE_SETTINGS
+        ));
 
         AudienceNetworkAds.initialize(this);
 
@@ -106,32 +101,29 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         delayDelta = initialDelayDelta;
 
         mp = MediaPlayer.create(this, R.raw.beep6);
-        mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                if(System.currentTimeMillis() > stopTime || forceStop) {
-                    imageView.setVisibility(View.GONE);
+        mp.setOnCompletionListener(mp -> {
+            if(System.currentTimeMillis() > stopTime || forceStop) {
+                imageView.setVisibility(View.GONE);
 
-                    delay = initialDelay;
-                    delayDelta = initialDelayDelta;
-                    forceStop = false;
-                    return;
-                }
-                try {
-                    Thread.sleep(delay);
-                    delayDelta = delayDelta * 0.91f;
-                    delay -= Math.round(delayDelta);
-                    if(delay < minDelay) {
-                        delay = minDelay;
-                    }
-
-                    beepIndex = (beepIndex + 1) % 4;
-                    imageView.setImageResource(beeps[beepIndex]);
-
-                    mp.start();
-                }
-                catch (InterruptedException ignored) { }
+                delay = initialDelay;
+                delayDelta = initialDelayDelta;
+                forceStop = false;
+                return;
             }
+            try {
+                Thread.sleep(delay);
+                delayDelta = delayDelta * 0.91f;
+                delay -= Math.round(delayDelta);
+                if(delay < minDelay) {
+                    delay = minDelay;
+                }
+
+                beepIndex = (beepIndex + 1) % 4;
+                imageView.setImageResource(beeps[beepIndex]);
+
+                mp.start();
+            }
+            catch (InterruptedException ignored) { }
         });
 
         Toast.makeText(this, "Shake the phone " + shakeCount + " times.", Toast.LENGTH_LONG).show();
