@@ -1,5 +1,6 @@
 package com.atompunkapps.ominousbeepingapp;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -22,8 +23,6 @@ import com.google.android.play.core.tasks.OnCompleteListener;
 import com.google.android.play.core.tasks.Task;
 
 public class SettingsActivity extends AppCompatActivity {
-    static int RESULT_PREFS_CHANGED = 2;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,7 +50,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
 
             getActivity().setResult(
-                    RESULT_PREFS_CHANGED,
+                    Activity.RESULT_OK,
                     resultIntent
             );
 

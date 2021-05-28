@@ -1,9 +1,6 @@
 package com.atompunkapps.ominousbeepingapp;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.preference.PreferenceManager;
-
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.hardware.Sensor;
@@ -17,13 +14,16 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
+
 import com.facebook.ads.AdSize;
 import com.facebook.ads.AdView;
 import com.facebook.ads.AudienceNetworkAds;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
-    private static final int REQUEST_CODE_SETTINGS = 9;
-
     private static final float SHAKE_THRESHOLD_GRAVITY = 2.2F;
     private static final int SHAKE_MIN_DELAY = 300;
     private static final int SHAKE_TIMEOUT = 2000;
@@ -68,11 +68,34 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         imageView = findViewById(R.id.beep_image);
 
-        findViewById(R.id.options_image).setOnClickListener(v -> startActivityForResult(
-                new Intent(MainActivity.this, SettingsActivity.class)
-                        .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP),
-                REQUEST_CODE_SETTINGS
-        ));
+        ActivityResultLauncher<Intent> launcher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if(result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                        if(result.getData().hasExtra("shake_count_changed")) {
+                            shakeCount = PreferenceManager.getDefaultSharedPreferences(this).getInt("shake_count", 4);
+                        }
+                        if(result.getData().hasExtra("beep_duration_changed")) {
+                            beepDuration = PreferenceManager.getDefaultSharedPreferences(this).getInt("beep_duration", 10) * 1000;
+                        }
+                        if(result.getData().hasExtra("initial_delay_changed")) {
+                            initialDelay = PreferenceManager.getDefaultSharedPreferences(this).getInt("initial_delay", DEFAULT_START_DELAY);
+                            delay = initialDelay;
+                        }
+                        if(result.getData().hasExtra("initial_delta_changed")) {
+                            initialDelayDelta = PreferenceManager.getDefaultSharedPreferences(this).getInt("initial_delta", DEFAULT_START_DELTA);
+                            delayDelta = initialDelayDelta;
+                        }
+                        if(result.getData().hasExtra("min_delay_changed")) {
+                            minDelay = PreferenceManager.getDefaultSharedPreferences(this).getInt("min_delay", DEFAULT_MIN_DELAY);
+                        }
+                    }
+                }
+        );
+        findViewById(R.id.options_image).setOnClickListener(v ->
+                launcher.launch(new Intent(this, SettingsActivity.class)
+                        .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP))
+        );
 
         AudienceNetworkAds.initialize(this);
 
@@ -170,30 +193,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) { }
 
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if(requestCode == REQUEST_CODE_SETTINGS && resultCode == SettingsActivity.RESULT_PREFS_CHANGED && data != null) {
-            if(data.hasExtra("shake_count_changed")) {
-                shakeCount = PreferenceManager.getDefaultSharedPreferences(this).getInt("shake_count", 4);
-            }
-            if(data.hasExtra("beep_duration_changed")) {
-                beepDuration = PreferenceManager.getDefaultSharedPreferences(this).getInt("beep_duration", 10) * 1000;
-            }
-            if(data.hasExtra("initial_delay_changed")) {
-                initialDelay = PreferenceManager.getDefaultSharedPreferences(this).getInt("initial_delay", DEFAULT_START_DELAY);
-                delay = initialDelay;
-            }
-            if(data.hasExtra("initial_delta_changed")) {
-                initialDelayDelta = PreferenceManager.getDefaultSharedPreferences(this).getInt("initial_delta", DEFAULT_START_DELTA);
-                delayDelta = initialDelayDelta;
-            }
-            if(data.hasExtra("min_delay_changed")) {
-                minDelay = PreferenceManager.getDefaultSharedPreferences(this).getInt("min_delay", DEFAULT_MIN_DELAY);
-            }
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }
 
     @Override
     protected void onPause() {
