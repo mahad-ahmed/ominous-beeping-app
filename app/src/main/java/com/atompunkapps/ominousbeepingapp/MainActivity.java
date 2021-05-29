@@ -10,7 +10,6 @@ import android.hardware.SensorManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -18,10 +17,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
-
-import com.facebook.ads.AdSize;
-import com.facebook.ads.AdView;
-import com.facebook.ads.AudienceNetworkAds;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
     private static final float SHAKE_THRESHOLD_GRAVITY = 2.2F;
@@ -59,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private float delayDelta;
     private boolean forceStop = false;
 
-    private AdView adView;
+//    private AdView adView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,14 +91,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 launcher.launch(new Intent(this, SettingsActivity.class)
                         .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP))
         );
+//
+//        AudienceNetworkAds.initialize(this);
+//
+//        adView = new AdView(this, SafeStore.PLACEMENT_ID, AdSize.BANNER_HEIGHT_50);
+//
+//        ((FrameLayout) findViewById(R.id.banner_container)).addView(adView);
+//
+//        adView.loadAd();
 
-        AudienceNetworkAds.initialize(this);
-
-        adView = new AdView(this, SafeStore.PLACEMENT_ID, AdSize.BANNER_HEIGHT_50);
-
-        ((FrameLayout) findViewById(R.id.banner_container)).addView(adView);
-
-        adView.loadAd();
+        Monetization.initAds(this, findViewById(R.id.adView));
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         if (sensorManager != null) {
@@ -221,9 +218,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     protected void onDestroy() {
-        if (adView != null) {
-            adView.destroy();
-        }
+//        if (adView != null) {
+//            adView.destroy();
+//        }
         super.onDestroy();
     }
 }

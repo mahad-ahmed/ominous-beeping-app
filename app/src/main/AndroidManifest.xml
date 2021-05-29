@@ -12,6 +12,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-8793641997883380~3661314077" />
+
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
