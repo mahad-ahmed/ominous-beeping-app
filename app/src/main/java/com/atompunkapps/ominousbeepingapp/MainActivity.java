@@ -54,12 +54,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private float delayDelta;
     private boolean forceStop = false;
 
+    private Monetization monetization;
+
 //    private AdView adView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        monetization = new Monetization(this, findViewById(R.id.banner_container));
 
         imageView = findViewById(R.id.beep_image);
 
@@ -87,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     }
                 }
         );
+
         findViewById(R.id.options_image).setOnClickListener(v ->
                 launcher.launch(new Intent(this, SettingsActivity.class)
                         .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP))
@@ -99,8 +104,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 //        ((FrameLayout) findViewById(R.id.banner_container)).addView(adView);
 //
 //        adView.loadAd();
-
-        Monetization.initAds(this, findViewById(R.id.adView));
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         if (sensorManager != null) {
@@ -200,6 +203,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
             forceStop = true;
         }
+
+//        monetization.pauseAds();
         super.onPause();
     }
 
@@ -213,14 +218,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         if(sensorManager != null && sensor != null) {
             sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_FASTEST);
         }
+
+//        monetization.resumeAds();
         super.onResume();
     }
 
     @Override
     protected void onDestroy() {
-//        if (adView != null) {
-//            adView.destroy();
-//        }
+        monetization.destroyAds();
         super.onDestroy();
     }
 }
