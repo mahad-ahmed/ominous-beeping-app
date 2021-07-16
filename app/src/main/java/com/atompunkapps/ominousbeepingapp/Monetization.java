@@ -3,7 +3,6 @@ package com.atompunkapps.ominousbeepingapp;
 import android.app.Activity;
 import android.widget.FrameLayout;
 
-import com.facebook.ads.AdSettings;
 import com.facebook.ads.AdSize;
 import com.facebook.ads.AdView;
 import com.facebook.ads.AudienceNetworkAds;
