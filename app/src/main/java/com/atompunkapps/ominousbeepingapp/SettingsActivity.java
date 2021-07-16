@@ -1,11 +1,14 @@
 package com.atompunkapps.ominousbeepingapp;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -99,6 +102,23 @@ public class SettingsActivity extends AppCompatActivity {
 //                    return true;
 //                }
 //            });
+
+            //noinspection ConstantConditions
+            findPreference("more_apps").setOnPreferenceClickListener(preference -> {
+                try {
+                    startActivity(
+                            new Intent(
+                                    Intent.ACTION_VIEW,
+                                    Uri.parse("http://play.google.com/store/apps/developer?id=Atompunk+Tech+%26+Utilities")
+                            )
+                    );
+                }
+                catch (ActivityNotFoundException ex) {
+                    Toast.makeText(getContext(), "Something went wrong!", Toast.LENGTH_SHORT).show();
+                }
+
+                return true;
+            });
         }
 
         @Override
