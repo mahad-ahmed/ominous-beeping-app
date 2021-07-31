@@ -33,6 +33,13 @@
             android:defaultValue="false"
             app:iconSpaceReserved="false" />
 
+        <SwitchPreference
+            android:key="torch_blink"
+            app:title="Blink torch"
+            android:summary="Blink your camera's flashlight with the sound"
+            android:defaultValue="true"
+            app:iconSpaceReserved="false" />
+
         <PreferenceCategory
             android:key="advanced"
             app:title="Advanced"
