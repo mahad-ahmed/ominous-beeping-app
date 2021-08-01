@@ -1,13 +1,19 @@
 package com.atompunkapps.ominousbeepingapp;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraManager;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -29,6 +35,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     private Sensor sensor;
     private SensorManager sensorManager;
+
+    private CameraManager cameraManager = null;
+    private String cameraId = null;
 
     private MediaPlayer mp;
     private long stopTime;
@@ -88,6 +97,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                         if(result.getData().hasExtra("min_delay_changed")) {
                             minDelay = PreferenceManager.getDefaultSharedPreferences(this).getInt("min_delay", DEFAULT_MIN_DELAY);
                         }
+                        if(result.getData().hasExtra("torch_blink_changed")) {
+                            if(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("torch_blink", true)) {
+                                if(cameraId == null || cameraManager == null) {
+                                    initCamera();
+                                }
+                            }
+                            else {
+                                // TODO: Check race condition
+                                cameraId = null;
+                                cameraManager = null;
+                            }
+                        }
                     }
                 }
         );
@@ -113,6 +134,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
+        if(preferences.getBoolean("torch_blink", true)) {
+            initCamera();
+        }
+
         shakeCount = preferences.getInt("shake_count", 4);
         beepDuration = preferences.getInt("beep_duration", 10) * 1000;
 
@@ -125,6 +150,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         mp = MediaPlayer.create(this, R.raw.beep6);
         mp.setOnCompletionListener(mp -> {
+            setFlash(false);
             if(System.currentTimeMillis() > stopTime || forceStop) {
                 imageView.setVisibility(View.GONE);
 
@@ -145,11 +171,26 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 imageView.setImageResource(beeps[beepIndex]);
 
                 mp.start();
+                setFlash(true);
             }
             catch (InterruptedException ignored) { }
         });
 
         Toast.makeText(this, "Shake the phone " + shakeCount + " times.", Toast.LENGTH_LONG).show();
+    }
+
+    private void initCamera() {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) {
+            cameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
+            try {
+                String[] cameraIdList = cameraManager.getCameraIdList();
+                if(cameraIdList.length > 0) {
+                    cameraId = cameraIdList[0];
+                }
+//                mCameraManager.registerTorchCallback();
+            }
+            catch (CameraAccessException ignored) { }
+        }
     }
 
     @Override
@@ -186,12 +227,23 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
                 stopTime = System.currentTimeMillis() + beepDuration;
                 mp.start();
+                setFlash(true);
             }
         }
     }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) { }
+
+    @SuppressLint("NewApi")  // mCameraManager should be null if API < 23 so just suppress I guess
+    private void setFlash(boolean enabled) {
+        if(cameraManager != null && cameraId != null) {
+            try {
+                cameraManager.setTorchMode(cameraId, enabled);
+            }
+            catch (CameraAccessException ignored) { }
+        }
+    }
 
 
     @Override
@@ -203,6 +255,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
             forceStop = true;
         }
+
+        setFlash(false);
 
 //        monetization.pauseAds();
         super.onPause();
