@@ -104,6 +104,12 @@ public class SettingsActivity extends AppCompatActivity {
 //            });
 
             //noinspection ConstantConditions
+            findPreference("torch_blink").setOnPreferenceChangeListener((preference, newValue) ->  {
+                resultIntent.putExtra("torch_blink_changed", true);
+                return true;
+            });
+
+            //noinspection ConstantConditions
             findPreference("more_apps").setOnPreferenceClickListener(preference -> {
                 try {
                     startActivity(
