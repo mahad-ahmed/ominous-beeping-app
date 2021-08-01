@@ -86,15 +86,15 @@
     <PreferenceCategory app:iconSpaceReserved="false">
 
         <Preference
-            android:key="rating"
-            app:title="Rating &amp; Feedback"
-            android:summary="Give your feedback on the Play Store"
-            app:iconSpaceReserved="false" />
-
-        <Preference
             android:key="more_apps"
             android:title="More Apps"
             android:summary="See my other apps on the Play Store"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="rating"
+            app:title="Rating &amp; Feedback"
+            android:summary="Give your feedback on the Play Store"
             app:iconSpaceReserved="false" />
 
     </PreferenceCategory>
