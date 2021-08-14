@@ -8,9 +8,48 @@
     tools:context=".MainActivity">
 
     <ImageView
-        android:id="@+id/beep_image"
+        android:id="@+id/beep_image_1"
+        android:src="@drawable/circle_1"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/text_view"
+        android:padding="25dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        tools:ignore="ContentDescription" />
+
+    <ImageView
+        android:id="@+id/beep_image_2"
+        android:src="@drawable/circle_2"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/text_view"
+        android:padding="25dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        tools:ignore="ContentDescription" />
+
+    <ImageView
+        android:id="@+id/beep_image_3"
+        android:src="@drawable/circle_3"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/text_view"
+        android:padding="25dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        tools:ignore="ContentDescription" />
+
+    <ImageView
+        android:id="@+id/beep_image_4"
         android:src="@drawable/circle_4"
-        android:visibility="gone"
+        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

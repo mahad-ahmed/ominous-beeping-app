@@ -42,13 +42,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private MediaPlayer mp;
     private long stopTime;
 
-    private ImageView imageView;
-    private final int[] beeps = new int[] {
-            R.drawable.circle_1,
-            R.drawable.circle_2,
-            R.drawable.circle_3,
-            R.drawable.circle_4
-    };
+    private final ImageView[] imageViews = new ImageView[4];
+//    private final int[] beeps = new int[] {
+//            R.drawable.circle_1,
+//            R.drawable.circle_2,
+//            R.drawable.circle_3,
+//            R.drawable.circle_4
+//    };
     private int beepIndex = 0;
 
     private long initialDelay;
@@ -74,7 +74,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         monetization = new Monetization(this, findViewById(R.id.banner_container));
 
-        imageView = findViewById(R.id.beep_image);
+        imageViews[0] = findViewById(R.id.beep_image_1);
+        imageViews[1] = findViewById(R.id.beep_image_2);
+        imageViews[2] = findViewById(R.id.beep_image_3);
+        imageViews[3] = findViewById(R.id.beep_image_4);
 
         ActivityResultLauncher<Intent> launcher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -152,7 +155,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         mp.setOnCompletionListener(mp -> {
             setFlash(false);
             if(System.currentTimeMillis() > stopTime || forceStop) {
-                imageView.setVisibility(View.GONE);
+                for(ImageView imageView : imageViews) {
+                    imageView.setVisibility(View.INVISIBLE);
+                }
 
                 delay = initialDelay;
                 delayDelta = initialDelayDelta;
@@ -168,7 +173,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 }
 
                 beepIndex = (beepIndex + 1) % 4;
-                imageView.setImageResource(beeps[beepIndex]);
+                for(int i = 0; i < imageViews.length; i++) {
+                    imageViews[i].setVisibility(i == beepIndex ? View.VISIBLE : View.INVISIBLE);
+                }
 
                 mp.start();
                 setFlash(true);
@@ -220,8 +227,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             if(count >= shakeCount) {
                 if(count == shakeCount) {
                     beepIndex = 0;
-                    imageView.setVisibility(View.VISIBLE);
-                    imageView.setImageResource(beeps[beepIndex]);
+                    imageViews[0].setVisibility(View.VISIBLE);
+//                    imageViews.setImageResource(beeps[beepIndex]);
 //                    mp.start(); // Move here?
                 }
 
