@@ -248,7 +248,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             try {
                 cameraManager.setTorchMode(cameraId, enabled);
             }
-            catch (CameraAccessException ignored) { }
+            catch (Exception ignored) { }
         }
     }
 
