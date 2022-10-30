@@ -277,7 +277,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
 
         if(sensorManager != null && sensor != null) {
-            sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_FASTEST);
+//            sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_FASTEST);
+            sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_GAME);
         }
 
 //        monetization.resumeAds();
