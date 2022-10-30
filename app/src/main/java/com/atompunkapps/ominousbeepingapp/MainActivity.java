@@ -33,6 +33,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private static final int DEFAULT_START_DELTA = 150;
     private static final int DEFAULT_MIN_DELAY = 25;
 
+    private static final float G_SQUARED = (SensorManager.GRAVITY_EARTH * SensorManager.GRAVITY_EARTH);
+
     private Sensor sensor;
     private SensorManager sensorManager;
 
@@ -202,12 +204,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        float gX = event.values[0] / SensorManager.GRAVITY_EARTH;
-        float gY = event.values[1] / SensorManager.GRAVITY_EARTH;
-        float gZ = event.values[2] / SensorManager.GRAVITY_EARTH;
+        // TODO: This can be optimised by not having to divide 3 times
+        float gX = event.values[0];
+        float gY = event.values[1];
+        float gZ = event.values[2];
 
         //  g-force = 1 when no movement
-        double gForce = Math.sqrt(gX * gX + gY * gY + gZ * gZ);
+        double gForce = Math.sqrt((gX * gX + gY * gY + gZ * gZ) / G_SQUARED);
 
         if (gForce > SHAKE_THRESHOLD_GRAVITY) {
             final long now = System.currentTimeMillis();
