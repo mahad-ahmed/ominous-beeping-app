@@ -333,8 +333,4 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         adView.destroy();
         super.onDestroy();
     }
-
-    public String getAdSize() {
-        return "";
-    }
 }
