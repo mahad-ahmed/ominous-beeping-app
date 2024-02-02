@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Rect;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -16,6 +17,8 @@ import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowMetrics;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -23,6 +26,10 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
+
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
     private static final float SHAKE_THRESHOLD_GRAVITY = 2.2F;
@@ -65,16 +72,46 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private float delayDelta;
     private boolean forceStop = false;
 
-    private Monetization monetization;
+//    private Monetization monetization;
 
-//    private AdView adView;
+    private AdView adView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        monetization = new Monetization(this, findViewById(R.id.banner_container));
+        FrameLayout adContainer = findViewById(R.id.banner_container);
+        if(adContainer.getChildCount() < 1) {
+            adView = new AdView(this);
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+                WindowMetrics windowMetrics = getWindowManager().getCurrentWindowMetrics();
+                Rect bounds = windowMetrics.getBounds();
+                float adWidthPixels = adContainer.getWidth();
+
+                if (adWidthPixels == 0f) {
+                    adWidthPixels = bounds.width();
+                }
+
+                float density = getResources().getDisplayMetrics().density;
+                int adWidth = (int) (adWidthPixels / density);
+
+                adView.setAdSize(AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(this, adWidth));
+            }
+            else {
+                adView.setAdSize(AdSize.FULL_BANNER);
+            }
+
+            adView.setAdUnitId(getString(R.string.banner_ad_unit_id));
+
+            adContainer.addView(adView);
+
+            adView.loadAd(new AdRequest.Builder().build());
+        }
+
+//        monetization = new Monetization(this, findViewById(R.id.banner_container));
+//        FirebaseAnalytics.getInstance(this);
 
         imageViews[0] = findViewById(R.id.beep_image_1);
         imageViews[1] = findViewById(R.id.beep_image_2);
@@ -269,6 +306,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         setFlash(false);
 
 //        monetization.pauseAds();
+        adView.pause();
         super.onPause();
     }
 
@@ -286,11 +324,17 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
 //        monetization.resumeAds();
         super.onResume();
+        adView.resume();
     }
 
     @Override
     protected void onDestroy() {
-        monetization.destroyAds();
+//        monetization.destroyAds();
+        adView.destroy();
         super.onDestroy();
+    }
+
+    public String getAdSize() {
+        return "";
     }
 }
